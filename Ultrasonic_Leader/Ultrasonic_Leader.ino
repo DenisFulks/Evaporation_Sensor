@@ -2,15 +2,13 @@
 #define follower 2
 #define trigger 8
 #define echo 9
-
+#define light 10
 
 // Data
-unsigned int cycle = 0;
-unsigned int n = 100;
+unsigned int counter = 0;
 
-// Variable
+// Variables
 unsigned int t;
-unsigned int startTime;
 
 void setup() {
   Serial.begin(9600);
@@ -19,38 +17,9 @@ void setup() {
   pinMode(follower, OUTPUT);
   pinMode(trigger, OUTPUT);
   pinMode(echo, INPUT);
+  pinMode(light, OUTPUT);
 
-  // Makes sure board boots and waits for calibration command
-  Serial.println("Leader Boot Complete");
-  Serial.println("Performing Calibration, Please Place Sensor in Place with no Wind and Press Enter...");
-  while(Serial.available() == 0) {}
-  Serial.println("Calibrating...");
-
-  // Calibration
-  for (int i = 0; i < n; i++) {
-    // Send follow signal
-    digitalWrite(follower, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(follower, LOW);
-
-    // Send ultra puls
-    digitalWrite(trigger, LOW);
-    delayMicroseconds(2);
-    digitalWrite(trigger, HIGH);  
-    delayMicroseconds(10);
-    digitalWrite(trigger, LOW);
-
-    // Records time
-    t = pulseIn(echo, HIGH);
-
-    Serial.println(t);
-
-    delay(200);
-  }
-
-  // Gets start time and makes seperator
-  startTime = millis();
-  Serial.println();
+  digitalWrite(light, LOW);
 }
 
 void loop() {
@@ -69,14 +38,22 @@ void loop() {
   // records time
   t = pulseIn(echo, HIGH);
 
-  cycle++;
+  // prints ToF
+  Serial.print(t);
+  Serial.write(13);
+  Serial.write(10);
 
-  // prints cycle, runtime, and ultra time
-  Serial.print(cycle);
-  Serial.print(", ");
-  Serial.print(millis() - startTime);
-  Serial.print(", ");
-  Serial.println(t);
+  // counter++;
 
-  delay(200);
+  /*
+  if (counter == 100) {
+    counter = 0;
+
+    digitalWrite(light, HIGH);
+    delay(100);
+    digitalWrite(light, LOW);
+  }
+  */
+
+  delay(150);
 }
