@@ -1,6 +1,6 @@
 clc; clear variables; close all;
 
-d = 0.5;
+d = 0.4;
 time(1) = 0;
 n = 10;
 
