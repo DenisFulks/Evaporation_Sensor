@@ -33,7 +33,7 @@ void loop() {
 
   cycle++;
 
-  delay(50);
+  delay(25);
 
   Serial.print(t);
   Serial.write(13);
