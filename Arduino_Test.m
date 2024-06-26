@@ -1,6 +1,8 @@
-clc; clear variables;
+clc; clear variables; close all;
 
-d = 0.3;
+d = 0.5;
+time(1) = 0;
+n = 10;
 
 serialportlist("available")';
 leader = serialport("COM6", 9600);
@@ -8,29 +10,33 @@ follower = serialport("COM4", 9600);
 
 pause(5)
 
-for i = 1:5
+for i = 1:20
     leaderCal = str2double(readline(leader));
     followerCal = str2double(readline(follower));
 end
 
-for i = 1:300
-    leaderTOF(i) = str2double(readline(leader));
-    followerTOF(i) = str2double(readline(follower));
-    velocity(i) = (d / 2) * ((1 / leaderTOF(i)) - (1 / followerTOF(i)));
+tic
+for i = 2:1001
+    leaderTOF(i - 1) = str2double(readline(leader));
+    followerTOF(i - 1) = str2double(readline(follower));
+    velocity(i - 1) = (d / 2) * ((1 / (leaderTOF(i - 1) / 1000000)) - (1 / (followerTOF(i - 1) / 1000000)));
+
+    time(i) = time(i - 1) + toc;
+    tic
 end
 
-plot(leaderTOF)
+scatter(time(2:end), leaderTOF, ".")
 title("leader")
 figure
 
-plot(followerTOF)
+scatter(time(2:end), followerTOF, ".")
 title("Follower")
 figure
 
-plot(velocity)
+scatter(time(2:end), velocity, ".")
 title("Velocity")
-
-
+xlabel("Time (s)")
+ylabel("Velocity (m/s)")
 
 
 
